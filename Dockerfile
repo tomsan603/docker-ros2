@@ -24,6 +24,8 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
     ros-jazzy-moveit\
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --break-system-packages tornado simplejpeg
+
 # ワークスペース作成
 WORKDIR /ros2_ws
 RUN mkdir -p /ros2_ws/src
@@ -32,12 +34,12 @@ RUN mkdir -p /ros2_ws/src
 RUN cd /ros2_ws/src && \
     git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation.git -b ros2 --depth 1 && \
     git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git -b jazzy --depth 1 && \
-    git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git -b humble --depth 1 && \
+    git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git -b jazzy --depth 1 && \
     git clone https://github.com/UniversalRobots/Universal_Robots_Client_Library.git --depth 1 && \
     git clone https://github.com/PickNikRobotics/ros2_robotiq_gripper.git && \
     git clone https://github.com/ian-chuang/serial-ros2.git && \
-    git clone https://github.com/panagelak/rq_fts_ros2_driver.git
-
+    git clone https://github.com/panagelak/rq_fts_ros2_driver.git &&\
+    git clone https://github.com/dheera/rosboard.git
 
 # 依存関係をすべて解決
 RUN apt-get update -q && \
