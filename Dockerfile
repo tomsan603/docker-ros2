@@ -19,9 +19,10 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
     ros-jazzy-ros2-control \
     ros-jazzy-ros2-controllers \
     ros-jazzy-gz-ros2-control \
-    ros-jazzy-ros-gz\
-    ros-jazzy-rviz2\
-    ros-jazzy-moveit\
+    ros-jazzy-ros-gz \
+    ros-jazzy-rviz2 \
+    ros-jazzy-moveit \
+    ros-jazzy-foxglove-bridge \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --break-system-packages tornado simplejpeg
