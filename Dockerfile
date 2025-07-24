@@ -1,10 +1,10 @@
-# ベースイメージ: ROS 2 jazzy
+# Base Image: ROS2 Jazzy
 FROM ros:jazzy
 
-# 環境変数: インタラクティブでないインストール用
+# Environment variable for non-interactive installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 基本開発ツール
+# Install basic development tools
 RUN apt-get update -q && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
@@ -25,13 +25,14 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
     ros-jazzy-foxglove-bridge \
     && rm -rf /var/lib/apt/lists/*
 
+# For ROS board
 RUN pip install --break-system-packages tornado simplejpeg
 
-# ワークスペース作成
+# Create a ROS 2 workspace
 WORKDIR /ros2_ws
 RUN mkdir -p /ros2_ws/src
 
-# UR関連リポジトリをクローン
+# Clone UR && Gripper && FTsensor && ROS board related repositories
 RUN cd /ros2_ws/src && \
     git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation.git -b ros2 --depth 1 && \
     git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git -b jazzy --depth 1 && \
@@ -42,20 +43,20 @@ RUN cd /ros2_ws/src && \
     git clone https://github.com/panagelak/rq_fts_ros2_driver.git &&\
     git clone https://github.com/dheera/rosboard.git
 
-# 依存関係をすべて解決
+# Install dependencies
 RUN apt-get update -q && \
     rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
-# ワークスペースビルド
+# Build the workspace
 RUN . /opt/ros/jazzy/setup.sh && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-# 環境設定をbashrcに
+# Source the environment setup in bashrc
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
     echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 
-# エントリーポイントとコマンド
+# Entrypoint and Command
 ENTRYPOINT []
 CMD ["/bin/bash"]
